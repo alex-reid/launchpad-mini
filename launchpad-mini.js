@@ -52,7 +52,9 @@ class Launchpad extends EventEmitter {
             }) )
             .map( b => {
                 b.cmd = b.y >= 8 ? 0xb0 : 0x90;
-                b.key = b.y >= 8 ? 0x68 + b.x : 0x10 * b.y + b.x;
+                // new code to output mk2 keys
+                b.key = b.y >= 8 ? 0x68 + b.x : 0x0a * ( 8 - b.y ) + b.x +1;
+                console.log(b)
                 return b;
             } );
 
@@ -359,8 +361,10 @@ class Launchpad extends EventEmitter {
         if ( message[ 0 ] === 0x90 ) {
 
             // Grid pressed
-            x = message[ 1 ] % 0x10;
-            y = (message[ 1 ] - x) / 0x10;
+            // mapped to mk2
+            x = message[ 1 ] % 10;
+            y = 8 - ((message[ 1 ] - x) / 10);
+            x -= 1;
             pressed = message[ 2 ] > 0;
 
         } else if ( message[ 0 ] === 0xb0 ) {
